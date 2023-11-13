@@ -9,8 +9,8 @@ namespace Commands
     void ping_command(dpp::slashcommand_t event);
     void info_command(dpp::slashcommand_t event);
     void profile_command(dpp::slashcommand_t event);
-    void search_command(dpp::slashcommand_t event, nlohmann::json config);
-    auto charac_command(dpp::slashcommand_t event, nlohmann::json config) -> dpp::job ;
+    auto search_command(dpp::slashcommand_t event, nlohmann::json config) -> dpp::task<void>;
+    auto charac_command(dpp::slashcommand_t event, nlohmann::json config) -> dpp::task<void>;
 }
 
 

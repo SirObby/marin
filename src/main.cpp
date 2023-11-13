@@ -7,32 +7,6 @@
 // for convenience
 using json = nlohmann::json;
 
-std::string urlEncode(std::string str){
-    std::string new_str = "";
-    char c;
-    int ic;
-    const char* chars = str.c_str();
-    char bufHex[10];
-    int len = strlen(chars);
-
-    for(int i=0;i<len;i++){
-        c = chars[i];
-        ic = c;
-        // uncomment this if you want to encode spaces with +
-        /*if (c==' ') new_str += '+';   
-        else */if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') new_str += c;
-        else {
-            sprintf(bufHex,"%X",c);
-            if(ic < 16) 
-                new_str += "%0"; 
-            else
-                new_str += "%";
-            new_str += bufHex;
-        }
-    }
-    return new_str;
- }
-
 
 int main()
 {
@@ -53,7 +27,7 @@ int main()
             } 
             if (event.command.get_command_name() == "search") {
 	            //Commands::search_command(event, data);
-                dpp::http_request_completion_t result = co_await event.from->creator->co_request(fmt::format("https://api.myanimelist.net/v2/anime?q={}&limit=1&nsfw=true&fields=id,title,main_picture,start_date,end_date,synopsis,mean,rank,popularity,nsfw,broadcast,source,rating,related_anime,recommendations",urlEncode(std::get<std::string>(event.get_parameter("name")))), dpp::m_get, "", "application/json", {
+                /*dpp::http_request_completion_t result = co_await event.from->creator->co_request(fmt::format("https://api.myanimelist.net/v2/anime?q={}&limit=1&nsfw=true&fields=id,title,main_picture,start_date,end_date,synopsis,mean,rank,popularity,nsfw,broadcast,source,rating,related_anime,recommendations",urlEncode(std::get<std::string>(event.get_parameter("name")))), dpp::m_get, "", "application/json", {
                     {"X-MAL-CLIENT-ID", data["MAL-CLIENT-ID"]}
                 });
                 dpp::message m;
@@ -64,13 +38,15 @@ int main()
                     //printf(result.body.c_str());
                     //printf(result.body.substr(0, result.body.find('\n', 0)));
 	            }
-	            event.reply(m);
+	            event.reply(m);*/
+                co_await Commands::search_command(event, data);
             }
             if (event.command.get_command_name() == "profile") {
 	            Commands::profile_command(event);
             } 
             if (event.command.get_command_name() == "character") {
 	            //Commands::profile_command(event);
+                co_await Commands::charac_command(event, data);
             } 
     });
 

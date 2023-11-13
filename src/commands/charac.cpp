@@ -5,7 +5,7 @@
 
 namespace Commands
 {
-    auto charac_command(dpp::slashcommand_t event, nlohmann::json config) -> dpp::job {
+    auto charac_command(dpp::slashcommand_t event, nlohmann::json config) -> dpp::task<void> {
         dpp::cluster *cluster = event.from->creator;
         /*
         int pong = ( event.from->websocket_ping + cluster->rest_ping ) * 1000;
@@ -29,22 +29,39 @@ namespace Commands
 	            }
 	        );*/
 
-        /*dpp::message m;
-        m.set_flags(dpp::m_ephemeral);
-        m.set_content("I am searching.");
+        dpp::message m;
+        //m.set_flags(dpp::m_ephemeral);
+        //m.set_content("I am searching.");
         
         dpp::async thinking = event.co_thinking(false);
 
-        dpp::http_request_completion_t http_req = cluster->co_request(
-            fmt::format("https://graphql.anilist.co"),
+        json variables;
+        variables["search"] = std::get<std::string>(event.get_parameter("name"));
+        json pdata;
+        pdata["variables"] = variables;
+        pdata["query"] = "query ($search: String) {\n  Character(search: $search) {\n    name {\n      first\n      middle\n      last\n      full\n      native\n      userPreferred\n    }\n    image {\n      large\n      medium\n    }\n    age\n    description\n    gender\n  }\n}";
+                
+        std::string postdata = pdata.dump();
+	    std::cout << postdata;
+        dpp::http_request_completion_t http_req = co_await cluster->co_request(
+            "https://graphql.anilist.co/",
             dpp::m_post,
-            "",
-            "application/json",
-            {
-                {"query", "query ($search: String) {\n  Character(search: $search) {\n    name {\n      first\n      middle\n      last\n      full\n      native\n      userPreferred\n    }\n    image {\n      large\n      medium\n    }\n    age\n    gender\n    media {\n      edges {\n        id\n        node {\n          id\n          coverImage {\n            extraLarge\n            large\n            medium\n            color\n          }\n          isAdult\n          title {\n            romaji\n            english\n            native\n            userPreferred\n          }\n        }\n      }\n    }\n  }\n}\n"}
-                {"variables", fmt::format("search:{}", std::get<std::string>(event.get_parameter("name")))}
-            }
-        );*/
+            postdata,
+                "application/json",
+	            {
+	                //{"Authorization", "Bearer tokengoeshere"}
+                }
+        );
+
+        std::cout << http_req.body << std::endl;
+
+        m.set_content("Here's what I got from AniList.co:");
+
+        dpp::embed emb;
+        //emb.set_thumbnail("");
+
+        co_await thinking;
+        event.edit_response(m);
 
     };
 }
