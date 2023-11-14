@@ -108,6 +108,13 @@ namespace Commands
 
         json query_data = json::parse(http_req.body);
 
+        if(query_data["data"]["Media"].is_null()) {
+            co_await thinking;
+
+            event.edit_response(dpp::message().add_embed(dpp::embed().set_color(std::stol("ff0000", nullptr, 16)).set_description("Looks like a search result was not found (or the API is down)").set_title("Error")));
+            co_return;
+        }
+
         //if(query_data["data"]["title"]["romaji"].is_string()) emb.set_title(query_data["data"]["title"]["romaji"].template get<std::string>());
         if(query_data["data"]["Media"]["title"]["romaji"].is_string() && query_data["data"]["Media"]["title"]["native"].is_string()) { emb.set_title(fmt::format("{} {}", query_data["data"]["Media"]["title"]["romaji"].template get<std::string>(), query_data["data"]["Media"]["title"]["native"].template get<std::string>())); 
             printf("title");
