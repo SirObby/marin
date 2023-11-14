@@ -84,7 +84,7 @@ namespace Commands
         json pdata;
         pdata["variables"] = variables;
         //pdata["query"] = "query ($search: String) {\n  Character(search: $search) {\n    name {\n      first\n      middle\n      last\n      full\n      native\n      userPreferred\n    }\n    image {\n      large\n      medium\n    }\n    age\n    description\n    gender\n  }\n}";
-        pdata["query"] = "query ($search: Int) {\n  Media (search: $search, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)\n		title {\n      romaji\n      english\n      native\n      userPreferred\n    }\n    format\n    description\n    episodes\n    duration\n    source\n    coverImage {\n      extraLarge\n      large\n      medium\n      color\n    }\n    bannerImage\n    averageScore\n    isAdult\n    genres\n    tags {\n      name\n      rank\n      isMediaSpoiler\n    }\n    id\n    airingSchedule {\n      edges {\n        id\n      }\n    }\n  }\n}";
+        pdata["query"] = "query ($search: String) {\n  Media (search: $search, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)\n		title {\n      romaji\n      english\n      native\n      userPreferred\n    }\n    format\n    description\n    episodes\n    duration\n    source\n    coverImage {\n      extraLarge\n      large\n      medium\n      color\n    }\n    bannerImage\n    averageScore\n    isAdult\n    genres\n    tags {\n      name\n      rank\n      isMediaSpoiler\n    }\n    id\n    airingSchedule {\n      edges {\n        id\n      }\n    }\n  }\n}";
 
         std::string postdata = pdata.dump();
 	    std::cout << postdata;
