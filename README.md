@@ -1,4 +1,4 @@
 # Marin discord bot 
-A discord bot for accessing the MyAnimeList API.
+A discord bot for accessing the AniList.co API.
 
 
