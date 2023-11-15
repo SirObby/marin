@@ -3,32 +3,6 @@
 #include <iostream>
 #include <fmt/format.h>
 
-std::string urlEncode(std::string str){
-    std::string new_str = "";
-    char c;
-    int ic;
-    const char* chars = str.c_str();
-    char bufHex[10];
-    int len = strlen(chars);
-
-    for(int i=0;i<len;i++){
-        c = chars[i];
-        ic = c;
-        // uncomment this if you want to encode spaces with +
-        /*if (c==' ') new_str += '+';   
-        else */if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') new_str += c;
-        else {
-            sprintf(bufHex,"%X",c);
-            if(ic < 16) 
-                new_str += "%0"; 
-            else
-                new_str += "%";
-            new_str += bufHex;
-        }
-    }
-    return new_str;
- }
-
 namespace Commands
 {
     auto search_command(dpp::slashcommand_t event, nlohmann::json config) -> dpp::task<void>  {
@@ -84,7 +58,8 @@ namespace Commands
         json pdata;
         pdata["variables"] = variables;
         //pdata["query"] = "query ($search: String) {\n  Character(search: $search) {\n    name {\n      first\n      middle\n      last\n      full\n      native\n      userPreferred\n    }\n    image {\n      large\n      medium\n    }\n    age\n    description\n    gender\n  }\n}";
-        pdata["query"] = "query ($search: String) {\n  Media (search: $search, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)\n		title {\n      romaji\n      english\n      native\n      userPreferred\n    }\n    format\n    description\n    episodes\n    duration\n    source\n    coverImage {\n      extraLarge\n      large\n      medium\n      color\n    }\n    bannerImage\n    averageScore\n    isAdult\n    genres\n    tags {\n      name\n      rank\n      isMediaSpoiler\n    }\n    id\n    airingSchedule {\n      edges {\n        id\n      }\n    }\n  }\n}";
+        //pdata["query"] = "query ($search: String) {\n  Media (search: $search, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)\n		title {\n      romaji\n      english\n      native\n      userPreferred\n    }\n    format\n    description\n    episodes\n    duration\n    source\n    coverImage {\n      extraLarge\n      large\n      medium\n      color\n    }\n    bannerImage\n    averageScore\n    isAdult\n    genres\n    tags {\n      name\n      rank\n      isMediaSpoiler\n    }\n    id\n    airingSchedule {\n      edges {\n        id\n      }\n    }\n  }\n}";
+        pdata["query"] = "query ($search: String) {\n  Media (search: $search, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)\n		title {\n      romaji\n      english\n      native\n      userPreferred\n    }\n    format\n    description\n    episodes\n    duration\n    source\n    coverImage {\n      extraLarge\n      large\n      medium\n      color\n    }\n    bannerImage\n    averageScore\n    isAdult\n    genres\n    tags {\n      name\n      rank\n      isMediaSpoiler\n    }\n    id\n    nextAiringEpisode {\n      episode\n      airingAt\n      timeUntilAiring\n    }\n    airingSchedule {\n      edges {\n        id\n        node {\n          airingAt\n          timeUntilAiring\n        }\n      }\n    }\n  }\n}\n";
 
         std::string postdata = pdata.dump();
 	    std::cout << postdata;
@@ -116,10 +91,10 @@ namespace Commands
         }
 
         //if(query_data["data"]["title"]["romaji"].is_string()) emb.set_title(query_data["data"]["title"]["romaji"].template get<std::string>());
-        if(query_data["data"]["Media"]["title"]["romaji"].is_string() && query_data["data"]["Media"]["title"]["native"].is_string()) { emb.set_title(fmt::format("{} {}", query_data["data"]["Media"]["title"]["romaji"].template get<std::string>(), query_data["data"]["Media"]["title"]["native"].template get<std::string>())); 
+        if(query_data["data"]["Media"]["title"]["native"].is_string()) { emb.set_title(fmt::format("{}", query_data["data"]["Media"]["title"]["native"].template get<std::string>())); 
             printf("title");
         }
-        if(query_data["data"]["Media"]["coverImage"]["medium"].is_string()) { emb.set_thumbnail(query_data["data"]["Media"]["coverImage"]["medium"].template get<std::string>());
+        if(query_data["data"]["Media"]["coverImage"]["medium"].is_string() ) { emb.set_thumbnail(query_data["data"]["Media"]["coverImage"]["medium"].template get<std::string>());
             printf("bannerimg");
         } 
         if(query_data["data"]["Media"]["description"].is_string()) { emb.set_description(query_data["data"]["Media"]["description"].template get<std::string>());
@@ -128,20 +103,41 @@ namespace Commands
         if(query_data["data"]["Media"]["id"].is_number()) { emb.set_url(fmt::format("https://anilist.co/anime/{}", query_data["data"]["Media"]["id"].template get<int>()));
             printf("desc");
         }
-        if(query_data["data"]["Media"]["genres"].is_array()) {
+        if(!query_data["data"]["Media"]["genres"].is_null()) {
             std::string genres = "";
 
-            for (size_t i = 0; i < query_data["data"]["Media"]["genres"].array().size(); i++)
+            for (auto it = query_data["data"]["Media"]["genres"].begin(); it != query_data["data"]["Media"]["genres"].end(); ++it)
             {
-                genres.append(query_data["data"]["Media"]["genres"].array()[i].dump());
+                std::cout << *it << std::endl;
+                genres.append(*it);
+                genres.append(" ");
             }
             
             emb.add_field("Genres", genres, true);
         }
+        /*if(!query_data["data"]["Media"]["tags"].is_null()) {
+            std::string tags = "";
 
+            for (auto it = query_data["data"]["Media"]["tags"].begin(); it != query_data["data"]["Media"]["tags"].end(); ++it)
+            {
+                std::cout << *it << std::endl;
+                //json jit = json::parse(*it->dump());
+                //std::string t = *it["name"].template get<std::string>();
+                tags.append(*it["name"].template get<std::string>());
+                tags.append(" ");
+            }
+            
+            emb.add_field("Tags", tags, true);
+        }*/
+        if(query_data["data"]["Media"]["episodes"].is_number() && query_data["data"]["Media"]["duration"].is_number()) emb.add_field("Episodes", fmt::format("{}, {}min", query_data["data"]["Media"]["episodes"].template get<int>(), query_data["data"]["Media"]["duration"].template get<int>()), true);
+        if(query_data["data"]["Media"]["source"].is_string() ) emb.add_field("Source", query_data["data"]["Media"]["source"].template get<std::string>(), true);
         //emb.set_thumbnail("");
+        if(!(query_data["data"]["Media"]["nextAiringEpisode"].is_null())) emb.add_field("Airing", fmt::format("Episode {} <t:{}:f>",query_data["data"]["Media"]["nextAiringEpisode"]["episode"].template get<int>(),query_data["data"]["Media"]["nextAiringEpisode"]["airingAt"].template get<int>()), true);
+        
 
         m.add_embed(emb);        
+
+        if(query_data["data"]["Media"]["isAdult"].is_boolean()) if(query_data["data"]["Media"]["isAdult"].template get<bool>() == true) m.add_embed(dpp::embed().set_color(std::stol("ffff00", nullptr, 16)).set_description("The above is meant for mature audiences.").set_title("Mature Content."));
 
         co_await thinking;
         event.edit_response(m);
