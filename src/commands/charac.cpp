@@ -90,6 +90,8 @@ namespace Commands
 
         //emb.set_thumbnail("");
 
+        m.add_embed(emb);
+
         co_await thinking;
         event.edit_response(m);
 
