@@ -26,26 +26,12 @@ int main()
 	            Commands::info_command(event);
             } 
             if (event.command.get_command_name() == "search") {
-	            //Commands::search_command(event, data);
-                /*dpp::http_request_completion_t result = co_await event.from->creator->co_request(fmt::format("https://api.myanimelist.net/v2/anime?q={}&limit=1&nsfw=true&fields=id,title,main_picture,start_date,end_date,synopsis,mean,rank,popularity,nsfw,broadcast,source,rating,related_anime,recommendations",urlEncode(std::get<std::string>(event.get_parameter("name")))), dpp::m_get, "", "application/json", {
-                    {"X-MAL-CLIENT-ID", data["MAL-CLIENT-ID"]}
-                });
-                dpp::message m;
-                m.set_flags(dpp::m_ephemeral);
-                if (result.status == 200) {
-	                m.add_embed(generate_anime_embed(result.body));
-                    //m.set_content(result.body.substr(0, result.body.find('\n', 0)));
-                    //printf(result.body.c_str());
-                    //printf(result.body.substr(0, result.body.find('\n', 0)));
-	            }
-	            event.reply(m);*/
                 co_await Commands::search_command(event, data);
             }
             if (event.command.get_command_name() == "profile") {
 	            Commands::profile_command(event);
             } 
             if (event.command.get_command_name() == "character") {
-	            //Commands::profile_command(event);
                 co_await Commands::charac_command(event, data);
             } 
     });

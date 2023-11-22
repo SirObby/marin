@@ -7,58 +7,13 @@ namespace Commands
 {
     auto search_command(dpp::slashcommand_t event, nlohmann::json config) -> dpp::task<void>  {
         dpp::cluster *cluster = event.from->creator;
-        /*
-        int pong = ( event.from->websocket_ping + cluster->rest_ping ) * 1000;
-        dpp::message m;
-        m.set_flags(dpp::m_ephemeral);
-        std::string str = "Pinged: " + std::to_string(pong) + "ms";
-        m.set_content(str);
-
-        event.reply(dpp::ir_channel_message_with_source, m);*/
-        /*cluster->co_request(
-	            fmt::format("https://api.myanimelist.net/v2/anime?q={}&nsfw=true&fields=id,title,main_picture,start_date,end_date,synopsis,mean,rank,popularity,nsfw,broadcast,source,rating,related_anime,recommendations",std::get<std::string>(event.get_parameter("name"))), dpp::m_post, [&event](const dpp::http_request_completion_t & cc) {
-	                // This callback is called when the HTTP request completes. See documentation of
-	                // dpp::http_request_completion_t for information on the fields in the parameter.
-	                std::cout << "I got reply: " << cc.body << " with HTTP status code: " << cc.status << "\n";
-                    std::cout << fmt::format("https://api.myanimelist.net/v2/anime?q={}&nsfw=true&fields=id,title,main_picture,start_date,end_date,synopsis,mean,rank,popularity,nsfw,broadcast,source,rating,related_anime,recommendations",std::get<std::string>(event.get_parameter("name"))) << std::endl;
-	            },
-	            "",
-	            "application/json",
-	            {
-	                {"X-MAL-CLIENT-ID", config["MAL-CLIENT-ID"]}
-	            }
-	        );*/
 
         dpp::async thinking = event.co_thinking(false);
-
-        /*dpp::http_request_completion_t mal_http_req = co_await cluster->co_request(
-            fmt::format("https://api.myanimelist.net/v2/anime?q={}&nsfw=true&fields=id,title&limit=1", urlEncode(std::get<std::string>(event.get_parameter("name")))),
-            dpp::m_get,
-            "",
-                "application/json",
-	            {
-	                {"X-MAL-CLIENT-ID", config["MAL-CLIENT-ID"]}
-                }
-        );
-
-        std::cout << mal_http_req.body << std::endl;
-
-        json mal_http_req_data = json::parse(mal_http_req.body);
-        json datanode = mal_http_req_data["data"];
-        if(datanode[0]["node"]["id"].is_null()) {
-            co_await thinking;
-
-            event.edit_response(dpp::message().add_embed(dpp::embed().set_color(std::stol("ff0000", nullptr, 16)).set_description("Looks like a search result was not found (or the API is down)").set_title("Error")));
-            co_return;
-        }
-        int id = datanode[0]["node"]["id"].template get<int>();*/
 
         json variables;
         variables["search"] = std::get<std::string>(event.get_parameter("name"));
         json pdata;
         pdata["variables"] = variables;
-        //pdata["query"] = "query ($search: String) {\n  Character(search: $search) {\n    name {\n      first\n      middle\n      last\n      full\n      native\n      userPreferred\n    }\n    image {\n      large\n      medium\n    }\n    age\n    description\n    gender\n  }\n}";
-        //pdata["query"] = "query ($search: String) {\n  Media (search: $search, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)\n		title {\n      romaji\n      english\n      native\n      userPreferred\n    }\n    format\n    description\n    episodes\n    duration\n    source\n    coverImage {\n      extraLarge\n      large\n      medium\n      color\n    }\n    bannerImage\n    averageScore\n    isAdult\n    genres\n    tags {\n      name\n      rank\n      isMediaSpoiler\n    }\n    id\n    airingSchedule {\n      edges {\n        id\n      }\n    }\n  }\n}";
         pdata["query"] = "query ($search: String) {\n  Media (search: $search, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)\n		title {\n      romaji\n      english\n      native\n      userPreferred\n    }\n    format\n    description\n    episodes\n    duration\n    source\n    coverImage {\n      extraLarge\n      large\n      medium\n      color\n    }\n    bannerImage\n    averageScore\n    isAdult\n    genres\n    tags {\n      name\n      rank\n      isMediaSpoiler\n    }\n    id\n    nextAiringEpisode {\n      episode\n      airingAt\n      timeUntilAiring\n    }\n    airingSchedule {\n      edges {\n        id\n        node {\n          airingAt\n          timeUntilAiring\n        }\n      }\n    }\n  }\n}\n";
 
         std::string postdata = pdata.dump();
@@ -115,20 +70,7 @@ namespace Commands
             
             emb.add_field("Genres", genres, true);
         }
-        /*if(!query_data["data"]["Media"]["tags"].is_null()) {
-            std::string tags = "";
 
-            for (auto it = query_data["data"]["Media"]["tags"].begin(); it != query_data["data"]["Media"]["tags"].end(); ++it)
-            {
-                std::cout << *it << std::endl;
-                //json jit = json::parse(*it->dump());
-                //std::string t = *it["name"].template get<std::string>();
-                tags.append(*it["name"].template get<std::string>());
-                tags.append(" ");
-            }
-            
-            emb.add_field("Tags", tags, true);
-        }*/
         if(query_data["data"]["Media"]["episodes"].is_number() && query_data["data"]["Media"]["duration"].is_number()) emb.add_field("Episodes", fmt::format("{}, {}min", query_data["data"]["Media"]["episodes"].template get<int>(), query_data["data"]["Media"]["duration"].template get<int>()), true);
         if(query_data["data"]["Media"]["source"].is_string() ) emb.add_field("Source", query_data["data"]["Media"]["source"].template get<std::string>(), true);
         //emb.set_thumbnail("");
