@@ -39,7 +39,7 @@ namespace Commands
         variables["search"] = std::get<std::string>(event.get_parameter("name"));
         json pdata;
         pdata["variables"] = variables;
-        pdata["query"] = "query ($search: String) {\n  Character(search: $search) {\n    name {\n      first\n      middle\n      last\n      full\n      native\n      userPreferred\n    }\n    image {\n      large\n      medium\n    }\n    age\n    description\n    gender\n  }\n}";
+        pdata["query"] = "query ($search: String) {\n  Character(search: $search) {\n    name {\n      first\n      middle\n      last\n      full\n      native\n      userPreferred\n    }\n    image {\n      large\n      medium\n    }\n    age\n    description\n    gender\n    id\n  }\n}";
                 
         std::string postdata = pdata.dump();
 	    std::cout << postdata;
