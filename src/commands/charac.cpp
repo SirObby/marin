@@ -77,7 +77,7 @@ namespace Commands
         ));
         
         if(query_data["data"]["Character"]["id"].is_number())
-            emb.set_url(std::format("https://anilist.co/character/{}", query_data["data"]["Character"]["id"].template get<int>()));
+            emb.set_url(fmt::format("https://anilist.co/character/{}", query_data["data"]["Character"]["id"].template get<int>()));
         
         if(query_data["data"]["Character"]["gender"].is_string())
             emb.add_field("Gender", query_data["data"]["Character"]["gender"].template get<std::string>(), true);
