@@ -72,7 +72,7 @@ namespace Commands
         if(query_data["data"]["Character"]["name"]["native"].is_string() ) 
             emb.set_title(query_data["data"]["Character"]["name"]["native"].template get<std::string>());
 
-        emb.set_description(fmt::format("{}\n", (query_data["data"]["Character"]["name"]["full"].is_string()) ? query_data["data"]["Character"]["name"]["native"].template get<std::string>()
+        emb.set_description(fmt::format("{}\n", (query_data["data"]["Character"]["name"]["full"].is_string()) ? query_data["data"]["Character"]["name"]["full"].template get<std::string>()
                 : ""
         ));
         
