@@ -57,7 +57,37 @@ namespace Commands
 
         m.set_content("Here's what I got from AniList.co:");
 
-        dpp::embed emb;
+        dpp::embed emb = dpp::embed().set_color(std::stol("e7c4ca", nullptr, 16));
+
+        json query_data = json::parse(http_req.body);
+
+        if(query_data["data"]["Character"].is_null()) {
+            co_await thinking;
+
+            event.edit_response(dpp::message().add_embed(dpp::embed().set_color(std::stol("ff0000", nullptr, 16)).set_description("Looks like a search result was not found (or the API is down)").set_title("Error")));
+            co_return;
+        }
+
+
+        if(query_data["data"]["Character"]["name"]["native"].is_string() ) 
+            emb.set_title(query_data["data"]["Character"]["name"]["native"].template get<std::string>());
+
+        emb.set_description(std::format("{}\n", (query_data["data"]["Character"]["name"]["full"].is_string()) ? query_data["data"]["Character"]["name"]["native"].template get<std::string>()
+                : ""
+        ));
+        
+        if(query_data["data"]["Character"]["id"].is_number())
+            emb.set_url(std::format("https://anilist.co/character/{}", query_data["data"]["Character"]["id"].template get<int>()));
+        
+        if(query_data["data"]["Character"]["gender"].is_string())
+            emb.add_field("Gender", query_data["data"]["Character"]["gender"].template get<std::string>(), true);
+
+        if(query_data["data"]["Character"]["age"].is_string())
+            emb.add_field("Age", query_data["data"]["Character"]["age"].template get<std::string>(), true);
+
+        if(query_data["data"]["Character"]["image"]["large"].is_string())
+            emb.set_thumbnail(query_data["data"]["Character"]["image"]["large"].template get<std::string>());
+
         //emb.set_thumbnail("");
 
         co_await thinking;

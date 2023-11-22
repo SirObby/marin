@@ -94,7 +94,7 @@ namespace Commands
         if(query_data["data"]["Media"]["title"]["native"].is_string()) { emb.set_title(fmt::format("{}", query_data["data"]["Media"]["title"]["native"].template get<std::string>())); 
             printf("title");
         }
-        if(query_data["data"]["Media"]["coverImage"]["medium"].is_string() ) { emb.set_thumbnail(query_data["data"]["Media"]["coverImage"]["medium"].template get<std::string>());
+        if(query_data["data"]["Media"]["coverImage"]["large"].is_string() ) { emb.set_thumbnail(query_data["data"]["Media"]["coverImage"]["large"].template get<std::string>());
             printf("bannerimg");
         } 
         if(query_data["data"]["Media"]["description"].is_string()) { emb.set_description(query_data["data"]["Media"]["description"].template get<std::string>());
