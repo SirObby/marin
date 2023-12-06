@@ -2,5 +2,6 @@
     "token": "",
     "MAL-CLIENT-ID": "",
     "debug-webhook": "",
-    "is_webhook_on": true
+    "is_webhook_on": true,
+    "cloudflare-ai-key": ""
 }
