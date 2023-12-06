@@ -58,13 +58,12 @@ int main()
 
 	            bot.global_bulk_command_create({ping_command, info_command, profile_command, search_command, charac_command});
 
-                bot.set_presence(dpp::presence(dpp::presence_status::ps_idle, dpp::activity_type::at_watching, std::to_string(dpp::get_guild_cache()->count()) + " servers"));
+                bot.set_presence(dpp::presence(dpp::presence_status::ps_idle, dpp::activity_type::at_custom, "Looking for Gojou-kun."));
 
-                bot.start_timer([&bot](const dpp::timer& timer) {
+                /*bot.start_timer([&bot](const dpp::timer& timer) {
 	                bot.set_presence(dpp::presence(dpp::presence_status::ps_idle, dpp::activity_type::at_watching, std::to_string(dpp::get_guild_cache()->count()) + " servers"));
-	            }, 120);
+	            }, 120);*/
 	        }
-
         });
 
     bot.start(dpp::st_wait);
