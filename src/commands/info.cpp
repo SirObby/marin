@@ -1,5 +1,6 @@
 #include "commands.h"
 #include "../ember.h"
+#include <fmt/format.h>
 
 namespace Commands
 {
@@ -12,16 +13,17 @@ namespace Commands
 		uint64_t guild_count = 0;
 		if (!v.is_error()) {
 			app = std::get<dpp::application>(v.value);
-			//guild_count = app.approximate_guild_count;
+			guild_count = app.approximate_guild_count;
 		}
         
         dpp::message m;
         ember emb;
-        emb.add_description("I am Marin Kitagawa, a discord bot for receiving anime recommendations based on your anime tastes.\n\n/get-started to get started!");
+        emb.add_description("I am Marin Kitagawa, a discord bot for searching for information about an anime based on the title.\n\n/search to get started!");
         emb.set_title("Info! ~ ♡");
         emb.add_field("invite the bot", "[here](https://discord.com/api/oauth2/authorize?client_id=1132282262541582347&permissions=313408&scope=bot%20applications.commands)", true);
         emb.add_field("support server", "[here](https://discord.gg/4kH9gWErcP)", true);
         emb.add_field("version", DPP_VERSION_TEXT, true);
+        emb.add_field("servers", fmt::format("{}", guild_count), true);
         
         m.set_content("");
         m.add_embed(emb.return_emb());

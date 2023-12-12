@@ -2,8 +2,12 @@
 #include <fmt/format.h>
 #include "ember.h"
 
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
+
 dpp::embed generate_anime_embed(std::string return_body) {
-    nlohmann::json j = ::json::parse(return_body);
+    nlohmann::json j = json::parse(return_body);
     
     ember emb;
 
