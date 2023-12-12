@@ -3,6 +3,8 @@
 #include <iostream>
 #include <fmt/format.h>
 
+using json = nlohmann::json;
+
 namespace Commands
 {
     auto charac_command(dpp::slashcommand_t event, nlohmann::json config) -> dpp::task<void> {
