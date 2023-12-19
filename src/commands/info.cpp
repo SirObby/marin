@@ -1,6 +1,7 @@
 #include "commands.h"
 #include "../ember.h"
 #include <fmt/format.h>
+#include "../box/sentry.h"
 
 namespace Commands
 {
@@ -22,8 +23,10 @@ namespace Commands
         emb.set_title("Info! ~ ♡");
         emb.add_field("invite the bot", "[here](https://discord.com/api/oauth2/authorize?client_id=1132282262541582347&permissions=313408&scope=bot%20applications.commands)", true);
         emb.add_field("support server", "[here](https://discord.gg/4kH9gWErcP)", true);
-        emb.add_field("version", DPP_VERSION_TEXT, true);
+        emb.add_field("DPP version", DPP_VERSION_TEXT, true);
         emb.add_field("servers", fmt::format("{}", guild_count), true);
+        emb.add_field("sentry version", sentry::version(), true);
+        emb.add_field("marin version", "america update!", true);
         
         m.set_content("");
         m.add_embed(emb.return_emb());
