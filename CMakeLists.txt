@@ -14,6 +14,7 @@ endif()
 
 add_subdirectory(libs/fmt)
 add_subdirectory(libs/DPP)
+#add_subdirectory(libs/CxxUrl)
 
 file(GLOB_RECURSE source_list "src/*.cpp" "src/commands/*.cpp" "src/*.hpp")
 add_executable(${PROJECT_NAME} ${source_list})
@@ -21,12 +22,15 @@ add_executable(${PROJECT_NAME} ${source_list})
 target_compile_definitions(${PROJECT_NAME} PUBLIC DPP_CORO)
 find_package(PostgreSQL REQUIRED)
 find_package(fmt)
-
+find_package(sentry)
+find_package(CxxUrl REQUIRED)
 
 target_link_libraries(${PROJECT_NAME}
     dpp
 	pqxx
 	fmt::fmt
+	sentry
+	chmike::CxxUrl
 )
 
 # Specify includes
@@ -34,6 +38,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
    libs/DPP/include
 )
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC DPP_CORO=ON CPPHTTPLIB_OPENSSL_SUPPORT)
 
 # Set C++ version
 set_target_properties(${PROJECT_NAME} PROPERTIES
