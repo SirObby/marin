@@ -3,11 +3,13 @@
 #include "nlohmann/json.hpp"
 #include "commands/commands.h"
 #include <fmt/format.h>
+#include "config.h"
 
 #include "anime.h"
 // for convenience
 using json = nlohmann::json;
 
+#include "box/sentry.h"
 
 int main()
 {
@@ -15,6 +17,8 @@ int main()
     json data = json::parse(f);
 
     dpp::cluster bot(data["token"]);
+
+    sentry::init(bot);
 
     bot.on_log(dpp::utility::cout_logger());
 
@@ -37,7 +41,7 @@ int main()
             } 
     });
 
-    bot.on_ready([&bot](const dpp::ready_t &event)
+    bot.on_ready([&bot, &data](const dpp::ready_t &event)
                  {
 	        if (dpp::run_once<struct register_bot_commands>()) {
 	            dpp::slashcommand ping_command("ping", "Ping pong!", bot.me.id);
@@ -61,11 +65,29 @@ int main()
 
                 bot.set_presence(dpp::presence(dpp::presence_status::ps_idle, dpp::activity_type::at_custom, "Looking for Gojou-kun."));
 
-                /*bot.start_timer([&bot](const dpp::timer& timer) {
-	                bot.set_presence(dpp::presence(dpp::presence_status::ps_idle, dpp::activity_type::at_watching, std::to_string(dpp::get_guild_cache()->count()) + " servers"));
-	            }, 120);*/
+                bot.start_timer([&bot, &data](const dpp::timer& timer) {
+	                //bot.set_presence(dpp::presence(dpp::presence_status::ps_idle, dpp::activity_type::at_watching, std::to_string(dpp::get_guild_cache()->count()) + " servers"));
+
+                    std::string mypostdata = "{\"server_ccount\":" + std::to_string(dpp::get_guild_cache()->count()) + "\"}";
+	        // Make a HTTP POST request. HTTP and HTTPS are supported here.
+	        bot.request(
+	            "https://top.gg/api/bot/1132282262541582347/stats", dpp::m_post, [&data](const dpp::http_request_completion_t & cc) {
+	                // This callback is called when the HTTP request completes. See documentation of
+	                // dpp::http_request_completion_t for information on the fields in the parameter.
+	                std::cout << "I got reply: " << cc.body << " with HTTP status code: " << cc.status << "\n";
+	            },
+	            mypostdata,
+	            "application/json",
+	            {
+	                {"Authorization", data["top.gg"]}
+	            }
+	        );
+
+                }, 120);
 	        }
         });
 
     bot.start(dpp::st_wait);
+
+    sentry::close();
 }

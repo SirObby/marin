@@ -103,10 +103,13 @@ namespace sentry {
 			if (send_envelope.empty()) {
 				continue;
 			}
-			Url dsn(config::get("sentry_dsn"));
+			std::ifstream f("config.json");
+    		json data = json::parse(f);
+
+			Url dsn(data["sentry_dsn"]);
 			httplib::Client cli(dsn.scheme() + "://" + dsn.host());
 			cli.enable_server_certificate_verification(false);
-			cli.set_interface(config::get("safe_interface"));
+			cli.set_interface(data["safe_interface"]);
 			auto res = cli.Post("/api" + dsn.path() + "/envelope/?sentry_key=" + dsn.user_info() + "&sentry_version=7&sentry_client=sentry.native/7.77.0", send_envelope, "application/json");
 			if (res) {
 				/* Handle rate limits if headers provided */
@@ -142,10 +145,11 @@ namespace sentry {
 
 	bool init(dpp::cluster& creator) {
 		bot = &creator;
-		
-		std::string dsn = config::get("sentry_dsn");
-		std::string env = config::get("environment");
-		double sample_rate = config::get("sentry_sample_rate").get<double>();
+		std::ifstream f("config.json");
+    json data = json::parse(f);
+		std::string dsn = data["sentry_dsn"];
+		std::string env = data["environment"];
+		double sample_rate = data["sentry_sample_rate"].get<double>();
 		sentry_options_t *options = sentry_options_new();
 		sentry_options_set_dsn(options, dsn.c_str());
 		sentry_options_set_database_path(options, ".sentry-native");
