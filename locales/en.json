@@ -1,0 +1,20 @@
+{
+  "PING_PONG": "Pong! Latency: {0}ms",
+  "INFO_DESC": "A Discord bot for interfacing with the AniList API.",
+  "SEARCH_NOT_FOUND": "No results found for that search.",
+  "MULTIPLE_RESULTS": "Multiple results found. Please select one:",
+  "SELECT_PLACEHOLDER": "Select an item...",
+  "ADD_FAVORITE": "Add to Profile",
+  "VIEW_STAFF": "View Staff",
+  "VIEW_STUDIOS": "View Studios",
+  "VIEW_EPISODES": "View Episodes",
+  "VIEW_RELATED": "Related Works",
+  "FAVORITE_ADDED": "Successfully added to your profile!",
+  "FAVORITE_FAILED": "Failed to add to your profile or it's already there.",
+  "NSFW_BLOCKED": "This content is mature and cannot be displayed in this channel/guild.",
+  "DATA_DELETED": "All your personal data has been deleted from our database.",
+  "SETTINGS_UPDATED": "Your settings have been updated.",
+  "SETTINGS_GUILD_UPDATED": "Guild settings have been updated.",
+  "PROFILE_EMPTY": "Your profile is empty. Try adding some favorites!",
+  "PROFILE_TITLE": "{0}'s Profile"
+}

@@ -49,8 +49,6 @@ Whether you are a consumer or a business user:
 
 - If we fail to comply with these Terms and Conditions, we will be responsible for loss or damage you suffer that is a foreseeable result of our breach of these Terms and Conditions, but we would not be responsible for any loss or damage that were not foreseeable at the time you started using the Site/Services.
 
-Notwithstanding anything to the contrary contained in the Disclaimer/Limitation of Liability section, our liability to you for any cause whatsoever and regardless of the form of the action, will at all times be limited to a total aggregate amount equal to the greater of (a) the sum of £one month's subscription or (b) the amount paid, if any, by you to us for the Services/Site during the six (6) month period prior to any cause of action arising. Refusal to grant any prize to a winner does not constitute a failure to comply with these terms and conditions.
-
 If you are a consumer user: 
 
 - Please note that we only provide our Site for domestic and private use. You agree not to use our Site for any commercial or business purposes, and we have no liability to you for any loss of profit, loss of business, business interruption, or loss of business opportunity. 

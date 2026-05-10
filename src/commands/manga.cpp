@@ -1,4 +1,4 @@
-#include "search.h"
+#include "manga.h"
 #include "../shared/anilist.h"
 #include "../shared/render.h"
 #include "../shared/database.h"
@@ -7,7 +7,7 @@
 #include <regex>
 
 namespace commands {
-    dpp::task<void> search(dpp::slashcommand_t event) {
+    dpp::task<void> manga(dpp::slashcommand_t event) {
         dpp::cluster* bot = event.from()->creator;
         dpp::async thinking = event.co_thinking(false);
         std::string locale = Database::get().get_user_locale(event.command.usr.id);
@@ -26,10 +26,9 @@ namespace commands {
         if (search_id > 0) {
             std::string query_str = R"(
             query ($id: Int) {
-              Media(id: $id, type: ANIME) {
+              Media(id: $id, type: MANGA) {
                 id title { romaji english native } description coverImage { extraLarge large }
-                genres episodes chapters averageScore isAdult status type format idMal
-                nextAiringEpisode { airingAt timeUntilAiring episode }
+                genres chapters averageScore isAdult status type format
               }
             }
             )";
@@ -40,10 +39,9 @@ namespace commands {
             std::string query_str = R"(
             query ($search: String) {
               Page(page: 1, perPage: 10) {
-                media(search: $search, type: ANIME) {
+                media(search: $search, type: MANGA) {
                   id title { romaji english native } description coverImage { extraLarge large }
-                  genres episodes chapters averageScore isAdult status type format idMal
-                  nextAiringEpisode { airingAt timeUntilAiring episode }
+                  genres chapters averageScore isAdult status type format
                 }
               }
             }
@@ -87,11 +85,9 @@ namespace commands {
             
             dpp::component action_row;
             action_row.set_type(dpp::cot_action_row)
-                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_success).set_label(I18n::get().t("ADD_FAVORITE", locale)).set_id("fav_ANIME_" + std::to_string(search_id)))
-                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_secondary).set_label(I18n::get().t("VIEW_EPISODES", locale)).set_id("episodes_ANIME_" + std::to_string(search_id)))
-                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_secondary).set_label(I18n::get().t("VIEW_RELATED", locale)).set_id("relations_ANIME_" + std::to_string(search_id)))
-                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_secondary).set_label(I18n::get().t("VIEW_STAFF", locale)).set_id("staff_ANIME_" + std::to_string(search_id)))
-                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_secondary).set_label(I18n::get().t("VIEW_STUDIOS", locale)).set_id("studio_ANIME_" + std::to_string(search_id)));
+                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_success).set_label(I18n::get().t("ADD_FAVORITE", locale)).set_id("fav_MANGA_" + std::to_string(search_id)))
+                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_secondary).set_label(I18n::get().t("VIEW_RELATED", locale)).set_id("relations_MANGA_" + std::to_string(search_id)))
+                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_secondary).set_label(I18n::get().t("VIEW_STAFF", locale)).set_id("staff_MANGA_" + std::to_string(search_id)));
             
             m.add_component(action_row);
             event.edit_response(m);
@@ -126,11 +122,9 @@ namespace commands {
             
             dpp::component action_row;
             action_row.set_type(dpp::cot_action_row)
-                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_success).set_label(I18n::get().t("ADD_FAVORITE", locale)).set_id("fav_ANIME_" + std::to_string(id)))
-                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_secondary).set_label(I18n::get().t("VIEW_EPISODES", locale)).set_id("episodes_ANIME_" + std::to_string(id)))
-                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_secondary).set_label(I18n::get().t("VIEW_RELATED", locale)).set_id("relations_ANIME_" + std::to_string(id)))
-                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_secondary).set_label(I18n::get().t("VIEW_STAFF", locale)).set_id("staff_ANIME_" + std::to_string(id)))
-                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_secondary).set_label(I18n::get().t("VIEW_STUDIOS", locale)).set_id("studio_ANIME_" + std::to_string(id)));
+                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_success).set_label(I18n::get().t("ADD_FAVORITE", locale)).set_id("fav_MANGA_" + std::to_string(id)))
+                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_secondary).set_label(I18n::get().t("VIEW_RELATED", locale)).set_id("relations_MANGA_" + std::to_string(id)))
+                .add_component(dpp::component().set_type(dpp::cot_button).set_style(dpp::cos_secondary).set_label(I18n::get().t("VIEW_STAFF", locale)).set_id("staff_MANGA_" + std::to_string(id)));
             
             m.add_component(action_row);
             event.edit_response(m);
@@ -141,7 +135,7 @@ namespace commands {
             else emb.set_color(render::THEME_COLOR);
 
             dpp::component select_menu;
-            select_menu.set_type(dpp::cot_selectmenu).set_placeholder(I18n::get().t("SELECT_PLACEHOLDER", locale)).set_id("anime_select");
+            select_menu.set_type(dpp::cot_selectmenu).set_placeholder(I18n::get().t("SELECT_PLACEHOLDER", locale)).set_id("manga_select");
             
             std::string desc;
             int index = 1;

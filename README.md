@@ -1,6 +1,4 @@
 # Marin discord bot 
 A discord bot for accessing the AniList.co API.
 
-Requirements:
-- sentry
-- https://github.com/chmike/CxxUrl
+This project was carried by Antigravity after it was left abandoned for 3 years. 

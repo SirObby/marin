@@ -1,14 +1,3 @@
 {
-    "token": "",
-    "MAL-CLIENT-ID": "",
-    "debug-webhook": "",
-    "is_webhook_on": true,
-    "cloudflare-ai-key": "",
-    "sentry_dsn": "sentry dsn",
-	"sentry_sample_rate": 0.2,
-    "environment": "environment name",
-
-    "botlists": {
-        "top.gg": ""
-    }
+    "token": ""
 }
