@@ -1,0 +1,16 @@
+[Unit]
+Description=Marin Discord Bot
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=samuel
+WorkingDirectory=/home/samuel/development/marin
+ExecStart=/home/samuel/development/marin/build/marin
+Restart=always
+RestartSec=5
+# Ensure the bot can find its config.json
+Environment=DPP_LOG_LEVEL=debug
+
+[Install]
+WantedBy=multi-user.target
