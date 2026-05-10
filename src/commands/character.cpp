@@ -1,7 +1,6 @@
 #include "character.h"
 #include "../shared/anilist.h"
 #include "../shared/render.h"
-#include <format>
 
 namespace commands {
     dpp::task<void> character(dpp::slashcommand_t event) {

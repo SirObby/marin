@@ -55,7 +55,8 @@ int main()
         Database::get().delete_guild(event.deleted.id);
     });
 
-    bot.on_ready([&bot](const dpp::ready_t &event) {
+    bot.on_ready([&bot, &data](const dpp::ready_t &event) {
+        (void)event;
         if (dpp::run_once<struct register_bot_commands>()) {
             std::vector<dpp::slashcommand> commands;
 
@@ -101,6 +102,24 @@ int main()
 
             bot.global_bulk_command_create(commands);
             bot.set_presence(dpp::presence(dpp::presence_status::ps_idle, dpp::activity_type::at_custom, "Looking for Gojou-kun."));
+
+            bot.start_timer([&bot, &data](const dpp::timer& timer){
+                (void)timer;
+                std::string mypostdata = "{\"server_count\": " + std::to_string(dpp::get_guild_cache()->count()) + "}";
+                // Make a HTTP POST request. HTTP and HTTPS are supported here.
+                bot.request(
+                    "https://top.gg/api/v1/projects/@me/metrics", dpp::m_patch, [](const dpp::http_request_completion_t & cc) {
+                        // This callback is called when the HTTP request completes. See documentation of
+                        // dpp::http_request_completion_t for information on the fields in the parameter.
+                        std::cout << "I got reply: " << cc.body << " with HTTP status code: " << cc.status << "\n";
+                    },
+                    mypostdata,
+                    "application/json",
+                    {
+                        {"Authorization", std::format("Bearer {}", data["topgg"].get<std::string>())}
+                    }
+                );
+            }, 3600); // Do it every hour.
         }
     });
 

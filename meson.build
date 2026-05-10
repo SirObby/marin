@@ -3,6 +3,7 @@ project('marin', 'cpp',
   default_options : ['warning_level=3', 'cpp_std=c++20'])
 
 dpp_dep = dependency('dpp')
+pq_dep = dependency('libpq')
 pqxx_dep = dependency('libpqxx')
 
 inc = include_directories('src')
@@ -29,7 +30,7 @@ src_files = [
 marin_exe = executable('marin',
   src_files,
   include_directories: inc,
-  dependencies: [dpp_dep, pqxx_dep],
+  dependencies: [dpp_dep, pqxx_dep, pq_dep],
   install : true)
 
 # Simple test suite

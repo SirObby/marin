@@ -3,7 +3,6 @@
 #include "../shared/render.h"
 #include "../shared/database.h"
 #include "../shared/i18n.h"
-#include <format>
 
 using json = nlohmann::json;
 
